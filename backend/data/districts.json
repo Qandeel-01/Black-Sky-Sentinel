@@ -1,0 +1,355 @@
+{
+  "region": "Southern Punjab, Pakistan",
+  "divisions": ["Multan", "Bahawalpur", "D.G. Khan"],
+  "data_sources": {
+    "population": "Pakistan Bureau of Statistics - Census 2023",
+    "load_shedding": "MEPCO (Multan Electric Power Company) - Summer 2023/2024 averages",
+    "flood_risk": "NDMA / PDMA Punjab - 2022 Flood Assessment Reports",
+    "heat_stress": "Pakistan Meteorological Department - Mean Maximum Summer Temperature",
+    "healthcare": "Punjab Health Department - District Health Profile 2023",
+    "internet": "Pakistan Telecommunication Authority (PTA) - Annual Report 2023",
+    "infrastructure": "WAPDA / NEPRA - Distribution Infrastructure Reports"
+  },
+  "districts": [
+    {
+      "id": "multan",
+      "name": "Multan",
+      "division": "Multan",
+      "population": 4500000,
+      "area_km2": 3720,
+      "centroid": [71.47, 30.20],
+      "criteria": {
+        "load_shedding": 14.0,
+        "flood_risk": 0.55,
+        "heat_stress": 0.82,
+        "internet_gap": 0.58,
+        "healthcare_deficit": 0.42,
+        "infrastructure_vulnerability": 0.60,
+        "population_exposure": 0.88
+      },
+      "meta": {
+        "load_shedding_unit": "hours/day (summer peak)",
+        "load_shedding_note": "Urban 12h, rural 16-18h average",
+        "flood_events": ["2022 Monsoon - 180,000 affected", "2010 Super Flood - partial"],
+        "notable_hazards": ["Extreme heat (48°C peak)", "Grid overload in summer", "Chenab River flooding"],
+        "heatwave_deaths_2015": 65,
+        "hospitals": 12,
+        "hospital_beds_per_1000": 0.8,
+        "internet_4g_coverage_pct": 62,
+        "grid_age_years": 35
+      },
+      "historical_events": [
+        {"year": 2022, "type": "Flood", "severity": "High", "affected": 180000, "description": "Monsoon flooding in rural Multan"},
+        {"year": 2023, "type": "Heatwave", "severity": "Critical", "affected": 2400000, "description": "45°C+ for 15 consecutive days, blackouts 16h+"},
+        {"year": 2021, "type": "Blackout", "severity": "High", "affected": 1200000, "description": "Grid collapse due to overload, 22h outage"}
+      ]
+    },
+    {
+      "id": "khanewal",
+      "name": "Khanewal",
+      "division": "Multan",
+      "population": 3100000,
+      "area_km2": 4349,
+      "centroid": [71.93, 30.30],
+      "criteria": {
+        "load_shedding": 16.0,
+        "flood_risk": 0.48,
+        "heat_stress": 0.75,
+        "internet_gap": 0.70,
+        "healthcare_deficit": 0.65,
+        "infrastructure_vulnerability": 0.68,
+        "population_exposure": 0.72
+      },
+      "meta": {
+        "load_shedding_note": "Predominantly rural, agricultural load management",
+        "flood_events": ["2022 - 95,000 displaced near Ravi/Sutlej canals"],
+        "notable_hazards": ["Rural feeder overloads", "Canal breaches", "Crop fire smoke"],
+        "hospitals": 5,
+        "hospital_beds_per_1000": 0.45,
+        "internet_4g_coverage_pct": 48,
+        "grid_age_years": 40
+      },
+      "historical_events": [
+        {"year": 2022, "type": "Flood", "severity": "Moderate", "affected": 95000, "description": "Canal overflow displaces villages"},
+        {"year": 2023, "type": "Blackout", "severity": "High", "affected": 800000, "description": "18h load shedding during June-July heat"}
+      ]
+    },
+    {
+      "id": "lodhran",
+      "name": "Lodhran",
+      "division": "Multan",
+      "population": 1800000,
+      "area_km2": 2778,
+      "centroid": [71.63, 29.52],
+      "criteria": {
+        "load_shedding": 17.0,
+        "flood_risk": 0.62,
+        "heat_stress": 0.78,
+        "internet_gap": 0.73,
+        "healthcare_deficit": 0.72,
+        "infrastructure_vulnerability": 0.74,
+        "population_exposure": 0.65
+      },
+      "meta": {
+        "load_shedding_note": "One of highest load shedding in Multan division",
+        "flood_events": ["2022 - 120,000 affected, 30% crop loss"],
+        "notable_hazards": ["Sutlej River flooding", "Transmission line failures"],
+        "hospitals": 3,
+        "hospital_beds_per_1000": 0.38,
+        "internet_4g_coverage_pct": 44,
+        "grid_age_years": 42
+      },
+      "historical_events": [
+        {"year": 2022, "type": "Flood", "severity": "High", "affected": 120000, "description": "Sutlej flooding damages 30% crops and roads"},
+        {"year": 2024, "type": "Blackout", "severity": "High", "affected": 600000, "description": "Transformer failure, 3-day grid disruption"}
+      ]
+    },
+    {
+      "id": "vehari",
+      "name": "Vehari",
+      "division": "Multan",
+      "population": 2800000,
+      "area_km2": 4364,
+      "centroid": [72.35, 30.04],
+      "criteria": {
+        "load_shedding": 16.0,
+        "flood_risk": 0.40,
+        "heat_stress": 0.76,
+        "internet_gap": 0.68,
+        "healthcare_deficit": 0.62,
+        "infrastructure_vulnerability": 0.65,
+        "population_exposure": 0.70
+      },
+      "meta": {
+        "load_shedding_note": "Cotton belt, industrial feeders prioritized",
+        "flood_events": ["2022 - moderate, canal overflow"],
+        "notable_hazards": ["Sutlej seasonal flooding", "Cotton gin fire risk"],
+        "hospitals": 4,
+        "hospital_beds_per_1000": 0.42,
+        "internet_4g_coverage_pct": 50,
+        "grid_age_years": 38
+      },
+      "historical_events": [
+        {"year": 2022, "type": "Flood", "severity": "Moderate", "affected": 75000, "description": "Canal overflow, moderate agricultural damage"},
+        {"year": 2023, "type": "Heatwave", "severity": "High", "affected": 1500000, "description": "44°C peak, prolonged blackouts"}
+      ]
+    },
+    {
+      "id": "bahawalpur",
+      "name": "Bahawalpur",
+      "division": "Bahawalpur",
+      "population": 4000000,
+      "area_km2": 24830,
+      "centroid": [71.68, 29.39],
+      "criteria": {
+        "load_shedding": 15.5,
+        "flood_risk": 0.52,
+        "heat_stress": 0.87,
+        "internet_gap": 0.66,
+        "healthcare_deficit": 0.55,
+        "infrastructure_vulnerability": 0.62,
+        "population_exposure": 0.80
+      },
+      "meta": {
+        "load_shedding_note": "Largest district by area; Cholistan desert remote areas have no grid at all",
+        "flood_events": ["2022 - Sutlej breach, 250,000 affected"],
+        "notable_hazards": ["Cholistan desert heat (50°C+)", "Sutlej flooding", "No grid in Cholistan"],
+        "hospitals": 8,
+        "hospital_beds_per_1000": 0.52,
+        "internet_4g_coverage_pct": 42,
+        "grid_age_years": 38,
+        "off_grid_population_pct": 18
+      },
+      "historical_events": [
+        {"year": 2022, "type": "Flood", "severity": "High", "affected": 250000, "description": "Sutlej breaches isolate eastern tehsils"},
+        {"year": 2024, "type": "Heatwave", "severity": "Critical", "affected": 2000000, "description": "50°C recorded in Cholistan; 3 deaths from heat stroke"}
+      ]
+    },
+    {
+      "id": "bahawalnagar",
+      "name": "Bahawalnagar",
+      "division": "Bahawalpur",
+      "population": 2700000,
+      "area_km2": 8878,
+      "centroid": [73.26, 29.99],
+      "criteria": {
+        "load_shedding": 16.5,
+        "flood_risk": 0.38,
+        "heat_stress": 0.72,
+        "internet_gap": 0.70,
+        "healthcare_deficit": 0.68,
+        "infrastructure_vulnerability": 0.65,
+        "population_exposure": 0.68
+      },
+      "meta": {
+        "load_shedding_note": "Agricultural / wheat belt, canal system dependent",
+        "flood_events": ["2022 - limited, Sutlej tributary overflow"],
+        "notable_hazards": ["Dust storms", "Water scarcity in drought years"],
+        "hospitals": 4,
+        "hospital_beds_per_1000": 0.40,
+        "internet_4g_coverage_pct": 46,
+        "grid_age_years": 41
+      },
+      "historical_events": [
+        {"year": 2022, "type": "Flood", "severity": "Low", "affected": 40000, "description": "Minor tributary flooding, limited damage"},
+        {"year": 2023, "type": "Blackout", "severity": "High", "affected": 900000, "description": "Widespread 18h load shedding during harvest season"}
+      ]
+    },
+    {
+      "id": "rahim_yar_khan",
+      "name": "Rahim Yar Khan",
+      "division": "Bahawalpur",
+      "population": 5000000,
+      "area_km2": 11880,
+      "centroid": [70.30, 28.42],
+      "criteria": {
+        "load_shedding": 17.5,
+        "flood_risk": 0.78,
+        "heat_stress": 0.89,
+        "internet_gap": 0.73,
+        "healthcare_deficit": 0.60,
+        "infrastructure_vulnerability": 0.72,
+        "population_exposure": 0.92
+      },
+      "meta": {
+        "load_shedding_note": "Border with Sindh; severe summer load shedding 18-20h",
+        "flood_events": ["2022 - Indus/Sutlej flooding, 400,000 displaced", "2010 - entire low-lying tehsils submerged"],
+        "notable_hazards": ["Extreme heat (close to Jacobabad)", "Dual river flooding risk", "Large rural population"],
+        "hospitals": 7,
+        "hospital_beds_per_1000": 0.55,
+        "internet_4g_coverage_pct": 40,
+        "grid_age_years": 36
+      },
+      "historical_events": [
+        {"year": 2022, "type": "Flood", "severity": "Critical", "affected": 400000, "description": "Indus-Sutlej double flooding, 3 tehsils inaccessible for weeks"},
+        {"year": 2023, "type": "Heatwave", "severity": "Critical", "affected": 2800000, "description": "48°C recorded; hospitals overwhelmed, 20h daily blackouts"}
+      ]
+    },
+    {
+      "id": "dg_khan",
+      "name": "Dera Ghazi Khan",
+      "division": "D.G. Khan",
+      "population": 3200000,
+      "area_km2": 11922,
+      "centroid": [70.64, 30.06],
+      "criteria": {
+        "load_shedding": 19.0,
+        "flood_risk": 0.82,
+        "heat_stress": 0.90,
+        "internet_gap": 0.80,
+        "healthcare_deficit": 0.72,
+        "infrastructure_vulnerability": 0.80,
+        "population_exposure": 0.76
+      },
+      "meta": {
+        "load_shedding_note": "Mountain tehsils have no grid; DG Khan city 18-20h load shedding",
+        "flood_events": ["2022 - Flash floods from Sulaiman Range, 6 killed, 85,000 displaced", "2020 - Hill torrents damaged 12,000 homes"],
+        "notable_hazards": ["Hill torrents (Sulaiman Range)", "Flash floods", "Remote mountain villages cut off", "Extreme heat + humidity"],
+        "hospitals": 5,
+        "hospital_beds_per_1000": 0.38,
+        "internet_4g_coverage_pct": 35,
+        "grid_age_years": 45,
+        "off_grid_population_pct": 25
+      },
+      "historical_events": [
+        {"year": 2022, "type": "Flood", "severity": "Critical", "affected": 85000, "description": "Hill torrents from Sulaiman Range destroy roads, cut off Taunsa area"},
+        {"year": 2023, "type": "Blackout", "severity": "Critical", "affected": 1500000, "description": "19-20h load shedding + grid failure, hospitals on generators"},
+        {"year": 2020, "type": "Flood", "severity": "High", "affected": 60000, "description": "Flash floods damage 12,000 homes in hill areas"}
+      ]
+    },
+    {
+      "id": "muzaffargarh",
+      "name": "Muzaffargarh",
+      "division": "D.G. Khan",
+      "population": 3800000,
+      "area_km2": 8249,
+      "centroid": [71.19, 30.07],
+      "criteria": {
+        "load_shedding": 18.5,
+        "flood_risk": 0.88,
+        "heat_stress": 0.88,
+        "internet_gap": 0.76,
+        "healthcare_deficit": 0.75,
+        "infrastructure_vulnerability": 0.82,
+        "population_exposure": 0.85
+      },
+      "meta": {
+        "load_shedding_note": "Worst affected by MEPCO load shedding; rural 20h+",
+        "flood_events": ["2022 - Indus+Chenab confluence flooding; worst hit in Southern Punjab", "2010 - 2.5 million affected, entire district submerged"],
+        "notable_hazards": ["Highest flood risk in region (Indus-Chenab confluence)", "No road access during floods", "Critical grid failure history"],
+        "hospitals": 5,
+        "hospital_beds_per_1000": 0.35,
+        "internet_4g_coverage_pct": 38,
+        "grid_age_years": 48
+      },
+      "historical_events": [
+        {"year": 2022, "type": "Flood", "severity": "Critical", "affected": 650000, "description": "Indus-Chenab confluence flooding; district HQ cut off, 14 deaths"},
+        {"year": 2010, "type": "Flood", "severity": "Critical", "affected": 2500000, "description": "Super-flood submerges entire district; 2.5M displaced"},
+        {"year": 2023, "type": "Blackout", "severity": "Critical", "affected": 2000000, "description": "20h+ load shedding; grid infrastructure failure compounded by heat"}
+      ]
+    },
+    {
+      "id": "layyah",
+      "name": "Layyah",
+      "division": "D.G. Khan",
+      "population": 1900000,
+      "area_km2": 6291,
+      "centroid": [70.94, 30.96],
+      "criteria": {
+        "load_shedding": 17.5,
+        "flood_risk": 0.72,
+        "heat_stress": 0.83,
+        "internet_gap": 0.80,
+        "healthcare_deficit": 0.78,
+        "infrastructure_vulnerability": 0.76,
+        "population_exposure": 0.62
+      },
+      "meta": {
+        "load_shedding_note": "Thal desert area; sparse grid coverage",
+        "flood_events": ["2022 - Chenab river flooding, 140,000 affected", "2014 - Chenab breach flooded 60 villages"],
+        "notable_hazards": ["Chenab River flooding", "Thal Desert isolation", "Sparse emergency services"],
+        "hospitals": 3,
+        "hospital_beds_per_1000": 0.32,
+        "internet_4g_coverage_pct": 32,
+        "grid_age_years": 44
+      },
+      "historical_events": [
+        {"year": 2022, "type": "Flood", "severity": "High", "affected": 140000, "description": "Chenab breaches flood 60+ villages, roads cut for 2 weeks"},
+        {"year": 2023, "type": "Blackout", "severity": "High", "affected": 800000, "description": "17-18h load shedding; Thal desert villages fully dark at night"}
+      ]
+    },
+    {
+      "id": "rajanpur",
+      "name": "Rajanpur",
+      "division": "D.G. Khan",
+      "population": 2100000,
+      "area_km2": 12319,
+      "centroid": [70.33, 29.10],
+      "criteria": {
+        "load_shedding": 21.0,
+        "flood_risk": 0.96,
+        "heat_stress": 0.93,
+        "internet_gap": 0.90,
+        "healthcare_deficit": 0.92,
+        "infrastructure_vulnerability": 0.90,
+        "population_exposure": 0.75
+      },
+      "meta": {
+        "load_shedding_note": "Worst load shedding in Southern Punjab; 20-22h in summer",
+        "flood_events": ["2022 - Entire district under water; 98% of crops destroyed", "2010 - Massive Indus flooding", "2019 - Hill torrent flash floods"],
+        "notable_hazards": ["Highest flood risk in Pakistan (Indus + hill torrents)", "Completely cut off during floods", "Minimal healthcare", "No reliable internet"],
+        "hospitals": 2,
+        "hospital_beds_per_1000": 0.18,
+        "internet_4g_coverage_pct": 18,
+        "grid_age_years": 52,
+        "off_grid_population_pct": 40
+      },
+      "historical_events": [
+        {"year": 2022, "type": "Flood", "severity": "Critical", "affected": 1200000, "description": "98% of district submerged; entire population displaced; army rescue operations"},
+        {"year": 2022, "type": "Blackout", "severity": "Critical", "affected": 1200000, "description": "All power infrastructure destroyed by floods; no grid for 6 weeks"},
+        {"year": 2010, "type": "Flood", "severity": "Critical", "affected": 900000, "description": "Indus super-flood; 900,000 displaced, international aid required"},
+        {"year": 2019, "type": "Flood", "severity": "High", "affected": 200000, "description": "Hill torrent flash floods destroy 8,000 homes"}
+      ]
+    }
+  ]
+}

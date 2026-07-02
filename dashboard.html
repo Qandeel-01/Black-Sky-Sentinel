@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ Black Sky — Southern Punjab Risk Index</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+:root{--bg:#0d1117;--surf:#161b22;--surf2:#21262d;--bdr:rgba(255,255,255,.1);--txt:#e6edf3;--mut:#8b949e;--acc:#00d4ff;--crit:#d62728;--high:#ff7f0e;--mod:#e6b800;--low:#2ca02c}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;font-size:13px}
+
+/* TOP BAR */
+#topbar{height:46px;background:var(--surf);border-bottom:1px solid var(--bdr);display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0}
+#tbar-title{font-size:13px;font-weight:700;letter-spacing:2px;color:#fff;white-space:nowrap}
+.tbadge{padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700}
+.tbc{background:rgba(214,39,40,.2);border:1px solid var(--crit);color:var(--crit)}
+.tbh{background:rgba(255,127,14,.2);border:1px solid var(--high);color:var(--high)}
+.tbm{background:rgba(230,184,0,.2);border:1px solid var(--mod);color:var(--mod)}
+.tbl{background:rgba(44,160,44,.2);border:1px solid var(--low);color:var(--low)}
+#tbar-sum{flex:1;font-size:11px;color:var(--mut)}
+#blk-btn{padding:5px 12px;background:transparent;border:1px solid var(--crit);color:var(--crit);font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;border-radius:4px;white-space:nowrap;transition:all .2s}
+#blk-btn.on{background:var(--crit);color:#fff;box-shadow:0 0 16px rgba(214,39,40,.6);animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{box-shadow:0 0 16px rgba(214,39,40,.5)}50%{box-shadow:0 0 30px rgba(214,39,40,1)}}
+
+/* LAYOUT */
+#layout{display:flex;height:calc(100vh - 46px)}
+
+/* LEFT PANEL */
+#left{width:244px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--bdr);overflow-y:auto;display:flex;flex-direction:column}
+.psec{padding:12px 14px;border-bottom:1px solid var(--bdr)}
+.phdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.ptitle{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--acc)}
+.bsm{font-size:10px;background:transparent;border:1px solid var(--bdr);color:var(--mut);padding:3px 8px;border-radius:3px;cursor:pointer}
+.bsm:hover{color:var(--txt);border-color:var(--txt)}
+
+/* Sliders */
+.cr{margin-bottom:9px}
+.ct{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+.ci{font-size:12px}
+.cn{flex:1;font-size:10px}
+.cp{font-size:10px;color:var(--acc);font-weight:700;min-width:32px;text-align:right}
+.sr{display:flex;align-items:center;gap:6px}
+input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:var(--surf2);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;background:var(--acc);border-radius:50%;box-shadow:0 0 5px var(--acc);cursor:pointer}
+.sv{font-size:10px;color:var(--txt);width:14px;text-align:right}
+#calc-btn{width:100%;padding:10px;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border:none;border-radius:5px;font-size:11px;font-weight:700;letter-spacing:1.5px;cursor:pointer;box-shadow:0 0 14px rgba(14,165,233,.4);transition:all .2s;margin-top:10px}
+#calc-btn:hover{box-shadow:0 0 28px rgba(14,165,233,.7);transform:translateY(-1px)}
+
+/* Coverage */
+.covr{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.covn{font-size:10px;color:var(--mut);width:68px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.covb{flex:1;height:4px;background:var(--surf2);border-radius:2px;overflow:hidden}
+.covf{height:100%;border-radius:2px;transition:width .5s}
+.covp{font-size:10px;width:28px;text-align:right}
+
+/* Data source note */
+.src-note{font-size:9px;color:var(--mut);line-height:1.5;margin-top:6px;padding-top:6px;border-top:1px solid var(--bdr)}
+
+/* MAP AREA */
+#map-area{flex:1;position:relative;overflow:hidden}
+#map{width:100%;height:100%}
+
+/* Filter bar */
+#fbar{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:800;background:rgba(13,17,23,.88);padding:5px 10px;border-radius:20px;border:1px solid var(--bdr);backdrop-filter:blur(8px)}
+.fb{padding:3px 10px;border:1px solid var(--bdr);background:transparent;color:var(--mut);font-size:11px;border-radius:12px;cursor:pointer;transition:all .2s}
+.fb.act{background:var(--acc);border-color:var(--acc);color:#000;font-weight:700}
+.fb:hover:not(.act){color:var(--txt);border-color:var(--txt)}
+
+/* Legend */
+#legend{position:absolute;bottom:28px;left:10px;z-index:800;background:rgba(13,17,23,.92);border:1px solid var(--bdr);padding:10px 12px;border-radius:8px;backdrop-filter:blur(8px);min-width:148px}
+.lg-t{font-size:9px;letter-spacing:2px;color:var(--mut);margin-bottom:7px;font-weight:700}
+.lg-r{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.lg-d{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.lg-l{font-size:11px;flex:1}
+.lg-v{font-size:10px;color:var(--mut)}
+
+/* Blackout overlay */
+#blk-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:750;display:none;pointer-events:none}
+
+/* RIGHT PANEL */
+#right{width:224px;flex-shrink:0;background:var(--surf);border-left:1px solid var(--bdr);display:flex;flex-direction:column;overflow:hidden}
+#rankings{overflow-y:auto}
+.ri{display:flex;align-items:center;gap:6px;padding:6px 11px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .15s}
+.ri:hover{background:var(--surf2)}
+.rn{font-size:10px;color:var(--mut);width:16px;flex-shrink:0}
+.rm{flex:1;font-size:11px;font-weight:600}
+.rs{font-size:12px;font-weight:700;flex-shrink:0}
+
+/* Nearest hubs */
+#near-sec{border-top:1px solid var(--bdr);flex-shrink:0}
+#near-list .ni{padding:7px 11px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer}
+#near-list .ni:hover{background:var(--surf2)}
+.nin{font-size:11px;font-weight:600;margin-bottom:2px}
+.nid{font-size:10px;color:var(--mut)}
+
+/* HUB PANEL — slides over right panel */
+#hub-panel{position:absolute;top:0;right:0;width:288px;height:100%;background:var(--surf);border-left:1px solid var(--bdr);z-index:1200;transform:translateX(100%);transition:transform .3s ease;overflow-y:auto;padding:15px}
+#hub-panel.open{transform:translateX(0)}
+.hph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.hpn{font-size:14px;font-weight:700;line-height:1.3;margin-bottom:3px}
+.hpb{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px}
+.hpd{font-size:10px;color:var(--mut);margin-top:3px}
+.hpc-btn{background:transparent;border:1px solid var(--bdr);color:var(--mut);cursor:pointer;padding:4px 8px;border-radius:3px;font-size:11px;flex-shrink:0}
+.hpc-btn:hover{color:var(--txt);border-color:var(--txt)}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0}
+.rgi{background:var(--surf2);border:1px solid var(--bdr);border-radius:6px;padding:8px}
+.ri2{font-size:13px;margin-bottom:2px}
+.rl{font-size:9px;color:var(--mut);letter-spacing:.5px;margin-bottom:2px}
+.rv{font-size:11px;font-weight:600}
+.btn-dir{width:100%;padding:8px;background:var(--surf2);border:1px solid var(--acc);color:var(--acc);border-radius:5px;cursor:pointer;font-size:11px;font-weight:600;margin-top:4px}
+.btn-dir:hover{background:rgba(0,212,255,.1)}
+.rt{width:100%;border-collapse:collapse;margin-top:9px;font-size:11px}
+.rt th{color:var(--mut);text-align:left;padding:3px 4px;font-size:10px}
+.rt td{padding:4px 4px;border-top:1px solid var(--bdr)}
+.blk-badge{padding:5px 10px;border-radius:4px;font-size:11px;font-weight:700;text-align:center;margin:8px 0}
+.bon{background:rgba(44,160,44,.15);border:1px solid var(--low);color:var(--low)}
+.boff{background:rgba(214,39,40,.15);border:1px solid var(--crit);color:var(--crit)}
+
+/* ── HUB MARKER ── */
+.hub-mk{position:relative;width:40px;height:40px}
+.hub-core{position:absolute;top:50%;left:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;border:2.5px solid rgba(255,255,255,.85);z-index:2;box-shadow:0 0 10px currentColor}
+.hub-ring{position:absolute;top:50%;left:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;z-index:1;animation:hrpulse 1.8s ease-out infinite}
+@keyframes hrpulse{0%{transform:scale(1);opacity:.75}100%{transform:scale(3.8);opacity:0}}
+.hub-mk.offline .hub-core{background:#374151!important;border-color:#4b5563;box-shadow:none}
+.hub-mk.offline .hub-ring{display:none}
+.hub-mk.dimmed{opacity:.25}
+/* Hub directory in sidebar */
+.hdi{display:flex;align-items:center;gap:7px;padding:5px 11px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .15s}
+.hdi:hover{background:var(--surf2)}
+.hd-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.hd-name{flex:1;font-size:10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd-dist{font-size:9px;color:var(--mut);white-space:nowrap}
+.hd-route{font-size:9px;padding:2px 6px;background:transparent;border:1px solid var(--acc);color:var(--acc);border-radius:3px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.hd-route:hover{background:rgba(0,212,255,.12)}
+
+/* User location dot */
+.uloc{width:14px;height:14px;background:#3b82f6;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 4px rgba(59,130,246,.3);animation:ulp 2s ease-out infinite}
+@keyframes ulp{0%{box-shadow:0 0 0 4px rgba(59,130,246,.3)}100%{box-shadow:0 0 0 16px rgba(59,130,246,0)}}
+
+/* Modal */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.mbox{background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:28px 32px;max-width:360px;text-align:center}
+.mico{font-size:34px;margin-bottom:11px}
+.mttl{font-size:15px;font-weight:700;margin-bottom:7px}
+.mdsc{font-size:12px;color:var(--mut);margin-bottom:18px;line-height:1.6}
+.mbtns{display:flex;gap:9px;justify-content:center}
+.mbtn{padding:8px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none}
+.mbtn-p{background:var(--acc);color:#000}
+.mbtn-s{background:var(--surf2);color:var(--txt);border:1px solid var(--bdr)}
+.mskip{margin-top:11px;font-size:11px;color:var(--mut);cursor:pointer;text-decoration:underline}
+
+/* Tooltip */
+.ltip{background:rgba(13,17,23,.96)!important;border:1px solid rgba(255,255,255,.15)!important;color:var(--txt)!important;font-family:inherit!important;font-size:12px!important;padding:10px 12px!important;border-radius:8px!important;min-width:160px!important;box-shadow:0 4px 20px rgba(0,0,0,.7)!important;pointer-events:none!important}
+.tt-n{font-size:14px;font-weight:700;margin-bottom:4px}
+.tt-s{font-size:22px;font-weight:700}
+.tt-t{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700;margin:3px 0}
+.tt-dr{font-size:11px;color:#9ca3af;margin-top:5px;line-height:1.5}
+.tt-p{font-size:11px;color:#6b7280;margin-top:3px}
+
+/* Loading state */
+#loading{position:absolute;inset:0;background:rgba(13,17,23,.85);z-index:2000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.ld-spinner{width:36px;height:36px;border:3px solid var(--surf2);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld-text{font-size:12px;color:var(--mut);letter-spacing:1px}
+
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+.crosshair{cursor:crosshair!important}
+/* District breakdown popup */
+.lpop .leaflet-popup-content-wrapper{background:rgba(13,17,23,.97)!important;border:1px solid rgba(255,255,255,.15)!important;border-radius:8px!important;color:var(--txt)!important;font-family:'Segoe UI',system-ui,sans-serif!important;box-shadow:0 4px 24px rgba(0,0,0,.8)!important}
+.lpop .leaflet-popup-tip{background:rgba(13,17,23,.97)!important}
+.lpop .leaflet-popup-close-button{color:var(--mut)!important;font-size:16px!important}
+</style>
+</head>
+<body>
+
+<!-- LOCATION MODAL -->
+<div id="modal">
+  <div class="mbox">
+    <div class="mico">📍</div>
+    <div class="mttl">Find Nearest Resilient Hubs</div>
+    <div class="mdsc">Share your location to discover the closest emergency shelters, hospitals, and relief hubs — with real routing distances.</div>
+    <div class="mbtns">
+      <button class="mbtn mbtn-p" onclick="useGeo()">📍 Use My Location</button>
+      <button class="mbtn mbtn-s" onclick="useManual()">🖱 Set on Map</button>
+    </div>
+    <div class="mskip" onclick="skipLoc()">Skip for now</div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <span id="tbar-title">⚡ BLACK SKY — SOUTHERN PUNJAB RISK INDEX</span>
+  <div id="tbadges" style="display:flex;gap:5px"></div>
+  <div id="tbar-sum"></div>
+  <button id="blk-btn" onclick="toggleBlackout()">⚡ BLACKOUT MODE</button>
+</div>
+
+<div id="layout">
+
+  <!-- LEFT -->
+  <div id="left">
+    <div class="psec">
+      <div class="phdr">
+        <span class="ptitle">AHP WEIGHT MODEL</span>
+        <button class="bsm" onclick="resetW()">RESET</button>
+      </div>
+      <div id="sliders"></div>
+      <button id="calc-btn" onclick="calculate()">▶  CALCULATE RISK</button>
+    </div>
+    <div class="psec" style="flex:1">
+      <div class="ptitle" style="margin-bottom:8px">HUB COVERAGE</div>
+      <div id="cov-sum"></div>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div id="map-area">
+    <!-- Loading overlay -->
+    <div id="loading">
+      <div class="ld-spinner"></div>
+      <div class="ld-text">LOADING REAL DATA FROM OSM + OPEN-METEO…</div>
+    </div>
+
+    <div id="fbar">
+      <button class="fb act" onclick="setF('all',this)">All</button>
+      <button class="fb" onclick="setF('power',this)">⚡ Power</button>
+      <button class="fb" onclick="setF('water',this)">💧 Water</button>
+      <button class="fb" onclick="setF('medical',this)">🏥 Medical</button>
+      <button class="fb" onclick="setF('comms',this)">📡 Comms</button>
+      <button class="fb" onclick="setF('food',this)">🍱 Food</button>
+    </div>
+
+    <div id="blk-overlay"></div>
+    <div id="map"></div>
+
+    <div id="legend">
+      <div class="lg-t">RISK SCALE</div>
+      <div class="lg-r"><div class="lg-d" style="background:#d62728"></div><span class="lg-l">Critical</span><span class="lg-v">≥75</span></div>
+      <div class="lg-r"><div class="lg-d" style="background:#ff7f0e"></div><span class="lg-l">High</span><span class="lg-v">50–74</span></div>
+      <div class="lg-r"><div class="lg-d" style="background:#e6b800"></div><span class="lg-l">Moderate</span><span class="lg-v">25–49</span></div>
+      <div class="lg-r"><div class="lg-d" style="background:#2ca02c"></div><span class="lg-l">Low</span><span class="lg-v">&lt;25</span></div>
+      <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--bdr)">
+        <div class="lg-r"><div class="lg-d" style="background:#0ea5e9"></div><span class="lg-l">Hospital Hub</span></div>
+        <div class="lg-r"><div class="lg-d" style="background:#f59e0b"></div><span class="lg-l">Gov / Relief</span></div>
+        <div class="lg-r"><div class="lg-d" style="background:#a855f7"></div><span class="lg-l">Warehouse</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div id="right">
+    <div class="psec" style="padding-bottom:8px">
+      <div class="ptitle">DISTRICT RANKINGS</div>
+      <div id="rank-hint" style="font-size:10px;color:var(--mut);margin-top:4px">Run calculation to rank</div>
+    </div>
+    <div id="rankings"></div>
+    <div id="near-sec" class="psec" style="padding-bottom:6px;flex-shrink:0">
+      <div class="ptitle">NEAREST HUBS</div>
+      <div id="near-hint" style="font-size:10px;color:var(--mut);margin-top:4px">Set your location first</div>
+    </div>
+    <div id="near-list"></div>
+    <div style="border-top:1px solid var(--bdr);flex-shrink:0">
+      <div class="psec" style="padding-bottom:4px;display:flex;align-items:center;justify-content:space-between">
+        <span class="ptitle">RESILIENCE HUBS</span>
+        <span style="font-size:9px;color:var(--mut)">click to route</span>
+      </div>
+    </div>
+    <div id="hub-dir-list" style="overflow-y:auto;flex:1"></div>
+  </div>
+
+  <!-- HUB SLIDE PANEL -->
+  <div id="hub-panel">
+    <div class="hph">
+      <div style="flex:1;min-width:0">
+        <div class="hpn" id="hp-name"></div>
+        <span class="hpb" id="hp-badge"></span>
+        <div class="hpd" id="hp-dlabel"></div>
+      </div>
+      <button class="hpc-btn" onclick="closeHub()">✕</button>
+    </div>
+    <div id="hp-blk"></div>
+    <div class="rg" id="hp-res"></div>
+    <div id="hp-dist-info"></div>
+    <button class="btn-dir" onclick="getDirections()">🗺  Get Directions</button>
+    <div id="hp-routing"></div>
+    <div id="hp-notes" style="font-size:10px;color:var(--mut);margin-top:10px;padding-top:8px;border-top:1px solid var(--bdr);line-height:1.5"></div>
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script>
+
+const TEHSILS=[
+  {district:'multan',      lat:30.157,lng:71.524,pop:1500000},
+  {district:'multan',      lat:30.200,lng:71.455,pop:420000},
+  {district:'multan',      lat:29.880,lng:71.290,pop:360000},
+  {district:'multan',      lat:29.503,lng:71.218,pop:310000},
+  {district:'khanewal',    lat:30.301,lng:71.932,pop:500000},
+  {district:'khanewal',    lat:30.401,lng:71.870,pop:390000},
+  {district:'khanewal',    lat:30.440,lng:72.353,pop:430000},
+  {district:'khanewal',    lat:29.790,lng:72.270,pop:330000},
+  {district:'lodhran',     lat:29.533,lng:71.633,pop:460000},
+  {district:'lodhran',     lat:29.802,lng:71.742,pop:330000},
+  {district:'lodhran',     lat:29.383,lng:71.913,pop:340000},
+  {district:'vehari',      lat:30.045,lng:72.352,pop:490000},
+  {district:'vehari',      lat:29.800,lng:72.170,pop:390000},
+  {district:'vehari',      lat:30.166,lng:72.650,pop:460000},
+  {district:'bahawalpur',  lat:29.395,lng:71.678,pop:820000},
+  {district:'bahawalpur',  lat:29.134,lng:71.261,pop:460000},
+  {district:'bahawalpur',  lat:29.694,lng:72.556,pop:390000},
+  {district:'bahawalpur',  lat:28.921,lng:71.744,pop:310000},
+  {district:'bahawalnagar',lat:29.998,lng:73.251,pop:440000},
+  {district:'bahawalnagar',lat:29.795,lng:72.855,pop:390000},
+  {district:'bahawalnagar',lat:29.620,lng:73.134,pop:340000},
+  {district:'bahawalnagar',lat:29.192,lng:72.861,pop:290000},
+  {district:'ry_khan',     lat:28.420,lng:70.295,pop:720000},
+  {district:'ry_khan',     lat:28.307,lng:70.130,pop:510000},
+  {district:'ry_khan',     lat:28.040,lng:70.960,pop:390000},
+  {district:'ry_khan',     lat:28.647,lng:70.657,pop:590000},
+  {district:'dg_khan',     lat:30.048,lng:70.641,pop:760000},
+  {district:'dg_khan',     lat:30.706,lng:70.657,pop:330000},
+  {district:'dg_khan',     lat:30.460,lng:70.910,pop:230000},
+  {district:'muzaffargarh',lat:30.072,lng:71.194,pop:490000},
+  {district:'muzaffargarh',lat:30.470,lng:70.970,pop:380000},
+  {district:'muzaffargarh',lat:29.360,lng:70.920,pop:290000},
+  {district:'muzaffargarh',lat:29.510,lng:71.300,pop:280000},
+  {district:'layyah',      lat:30.963,lng:70.938,pop:510000},
+  {district:'layyah',      lat:31.160,lng:70.870,pop:290000},
+  {district:'layyah',      lat:31.224,lng:70.940,pop:240000},
+  {district:'rajanpur',    lat:29.104,lng:70.330,pop:490000},
+  {district:'rajanpur',    lat:28.690,lng:70.060,pop:330000},
+  {district:'rajanpur',    lat:29.640,lng:70.600,pop:380000},
+];
+
+// ═══════════════════════════════════════
+// RESILIENT HUBS (18 real hubs)
+// ═══════════════════════════════════════
+// Hub types: Hospital | THQ Hospital | BHU | Warehouse | Relief Center
+// Resource values (solar/water/gen/cap/food) are planning estimates — not verified field data
+const HUBS = [
+  {id:1, name:'DHQ Hospital Rajanpur',        district:'Rajanpur',        lat:29.104,lng:70.330,type:'Hospital',     cap:500, solar:45,water:8000, med:'Trauma + ICU',   sat:true, food:7, gen:75,  notes:'District HQ hospital. PDMA registered resilience hub. Solar panels + diesel generator backup. Estimated values — verify with PDMA.'},
+  {id:2, name:'THQ Hospital Rojhan',          district:'Rajanpur',        lat:28.690,lng:70.060,type:'THQ Hospital',  cap:200, solar:12,water:2500, med:'Emergency + OPD',sat:false,food:3, gen:25,  notes:'Tehsil HQ Hospital serving Rojhan tehsil. Road access via Indus Highway. Estimated values — verify with Health Dept.'},
+  {id:3, name:'DHQ Hospital Muzaffargarh',    district:'Muzaffargarh',    lat:30.072,lng:71.194,type:'Hospital',     cap:600, solar:50,water:9000, med:'Trauma + ICU',   sat:true, food:10,gen:100, notes:'District HQ hospital, largest facility in district. PDMA contact point. Estimated values — verify with PDMA.'},
+  {id:4, name:'BHU Kot Addu (Solar)',         district:'Muzaffargarh',    lat:30.470,lng:70.970,type:'BHU',          cap:80,  solar:8, water:800,  med:'Primary Care',   sat:false,food:2, gen:0,   notes:'Basic Health Unit with solar microgrid. Primary care only — no surgical capacity. Estimated values — verify with Health Dept.'},
+  {id:5, name:'DHQ Hospital DG Khan',         district:'Dera Ghazi Khan', lat:30.048,lng:70.641,type:'Hospital',     cap:700, solar:60,water:10000,med:'Tertiary + ICU',  sat:true, food:14,gen:120, notes:'District HQ hospital, regional referral centre for DG Khan Division. Satellite uplink reported. Estimated values — verify with PDMA.'},
+  {id:6, name:'PDMA Warehouse Taunsa',        district:'Dera Ghazi Khan', lat:30.706,lng:70.657,type:'Warehouse',    cap:400, solar:20,water:4000, med:'First Aid only',  sat:true, food:10,gen:35,  notes:'PDMA pre-positioned relief warehouse. Serves Taunsa tehsil and hill areas. Estimated values — verify with PDMA DG Khan.'},
+  {id:7, name:'DHQ Hospital Rahim Yar Khan',  district:'Rahim Yar Khan',  lat:28.420,lng:70.295,type:'Hospital',     cap:550, solar:40,water:7000, med:'Trauma + ICU',   sat:true, food:10,gen:80,  notes:'District HQ hospital. Solar hybrid system. NDMA listed. Estimated values — verify with PDMA.'},
+  {id:8, name:'THQ Hospital Sadiqabad',       district:'Rahim Yar Khan',  lat:28.307,lng:70.130,type:'THQ Hospital',  cap:250, solar:15,water:3000, med:'Emergency + OPD',sat:false,food:4, gen:30,  notes:'Tehsil HQ Hospital Sadiqabad. Serves southern RY Khan. Estimated values — verify with Health Dept.'},
+  {id:9, name:'DHQ Hospital Layyah',          district:'Layyah',          lat:30.963,lng:70.938,type:'Hospital',     cap:400, solar:30,water:5000, med:'Trauma',          sat:true, food:7, gen:60,  notes:'District HQ hospital. Generator + solar panels. PDMA contact. Estimated values — verify with PDMA.'},
+  {id:10,name:'THQ Hospital Chowk Azam',      district:'Layyah',          lat:31.160,lng:70.870,type:'THQ Hospital',  cap:150, solar:10,water:1500, med:'Emergency + OPD',sat:false,food:3, gen:15,  notes:'Tehsil HQ Hospital, Chowk Azam. All-season road access. Estimated values — verify with Health Dept.'},
+  {id:11,name:'DHQ Hospital Lodhran',         district:'Lodhran',         lat:29.533,lng:71.633,type:'Hospital',     cap:350, solar:25,water:4500, med:'Trauma',          sat:false,food:5, gen:40,  notes:'District HQ hospital. Backup generator and borehole water supply. Estimated values — verify with PDMA.'},
+  {id:12,name:'DHQ Hospital Bahawalpur',      district:'Bahawalpur',      lat:29.395,lng:71.678,type:'Hospital',     cap:800, solar:70,water:12000,med:'Tertiary + ICU',  sat:true, food:14,gen:150, notes:'District HQ hospital, largest hub in Bahawalpur. Blood bank. PDMA listed. Estimated values — verify with PDMA.'},
+  {id:13,name:'Victoria Hospital Bahawalpur', district:'Bahawalpur',      lat:29.400,lng:71.690,type:'Hospital',     cap:600, solar:55,water:10000,med:'Tertiary + ICU',  sat:true, food:10,gen:100, notes:'Major teaching hospital, 24/7 emergency. Run by Government of Punjab. Estimated values — verify with hospital administration.'},
+  {id:14,name:'DHQ Hospital Khanewal',        district:'Khanewal',        lat:30.301,lng:71.932,type:'Hospital',     cap:400, solar:30,water:5000, med:'Trauma',          sat:false,food:5, gen:50,  notes:'District HQ hospital. Solar backup, WASA water connection. Estimated values — verify with PDMA.'},
+  {id:15,name:'Nishtar Hospital Multan',      district:'Multan',          lat:30.157,lng:71.524,type:'Hospital',     cap:1800,solar:120,water:20000,med:'Tertiary + Burns',sat:true, food:21,gen:250, notes:'Largest public hospital in Southern Punjab. Burn unit, multi-specialty ICU. WAPDA + generator. Estimated values — verify with hospital admin.'},
+  {id:16,name:'DHQ Hospital Vehari',          district:'Vehari',          lat:30.045,lng:72.352,type:'Hospital',     cap:350, solar:25,water:4000, med:'Trauma',          sat:false,food:5, gen:40,  notes:'District HQ hospital. Functional solar panels, emergency department. Estimated values — verify with PDMA.'},
+  {id:17,name:'DHQ Hospital Bahawalnagar',    district:'Bahawalnagar',    lat:29.998,lng:73.251,type:'Hospital',     cap:400, solar:30,water:5000, med:'Trauma',          sat:false,food:5, gen:45,  notes:'District HQ hospital. Near India border area. NDMA and PDMA contact. Estimated values — verify with PDMA.'},
+  {id:18,name:'PDMA Warehouse Hasilpur',      district:'Bahawalpur',      lat:29.694,lng:72.556,type:'Warehouse',    cap:300, solar:10,water:2000, med:'First Aid only',  sat:false,food:10,gen:15,  notes:'PDMA relief supplies warehouse, Hasilpur (Bahawalpur District). Community shelter capacity. Estimated values — verify with PDMA Bahawalpur.'},
+];
+
+const CRITERIA=[
+  {id:'blackout',label:'Complete Blackout Vulnerability',icon:'⚡'},
+  {id:'flood',   label:'Flood Vulnerability',           icon:'🌊'},
+  {id:'heat',    label:'Heat Stress',                   icon:'🌡️'},
+  {id:'internet',label:'Internet Gap',                  icon:'📡'},
+  {id:'health',  label:'Healthcare Deficit',            icon:'🏥'},
+  {id:'infra',   label:'Infrastructure Gap',            icon:'🏗️'},
+  {id:'popexp',  label:'Population Exposure',           icon:'👥'},
+];
+
+// District bounding boxes [minlng,minlat,maxlng,maxlat] for choropleth polygons
+const DBOUNDS={
+  multan:      [71.2,29.8,72.5,30.7],
+  khanewal:    [71.7,30.0,73.3,31.1],
+  lodhran:     [71.0,29.0,72.4,29.8],
+  vehari:      [72.2,29.5,73.7,30.5],
+  bahawalpur:  [70.0,28.5,73.2,29.5],
+  bahawalnagar:[73.2,29.2,74.5,31.0],
+  ry_khan:     [69.0,27.6,73.2,28.5],
+  dg_khan:     [69.3,29.4,71.0,30.8],
+  muzaffargarh:[71.0,29.6,72.1,30.6],
+  layyah:      [70.2,30.5,71.9,32.2],
+  rajanpur:    [69.0,28.3,71.0,29.7],
+};
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let DISTRICTS = [];        // filled after data load
+let weights = Object.fromEntries(CRITERIA.map(c=>[c.id,5]));
+let results  = null;
+let blackoutOn=false, activeF='all';
+let userLat=null, userLng=null, manualMode=false;
+let selHub=null;
+let chorLyr=null, heatLyr=null, routeLyr=null, userMark=null;
+let hubLayers=[];
+let realGeoJSON=null;
+let settlements=[];          // real OSM settlement points [{lat,lon,district_id,population,...}]
+const ORS='5b3ce3597851110001cf624843b81e9e0c2c4a5c9f7e6a7a5f7e2b8';
+// GeoJSON district_id → real_scores id remap
+const GEO_ID_MAP={'rahim_yar_khan':'ry_khan'};
+
+// ═══════════════════════════════════════
+// MAP INIT
+// ═══════════════════════════════════════
+const map=L.map('map',{center:[29.6,71.4],zoom:7,zoomControl:true,preferCanvas:false});
+L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
+  {attribution:'© CARTO © OSM',subdomains:'abcd',maxZoom:19}).addTo(map);
+
+map.on('click',e=>{
+  if(!manualMode)return;
+  manualMode=false;
+  map.getContainer().classList.remove('crosshair');
+  setUserLoc(e.latlng.lat,e.latlng.lng);
+});
+
+// ═══════════════════════════════════════
+// DATA LOAD from Flask backend
+// ═══════════════════════════════════════
+async function loadData(){
+  try{
+    const [scoreRes, geoRes, settlRes] = await Promise.all([
+      fetch('http://localhost:5000/api/real-scores'),
+      fetch('/southern_punjab.geojson').catch(()=>null),
+      fetch('http://localhost:5000/api/settlements').catch(()=>null),
+    ]);
+    if(!scoreRes.ok)throw new Error('Backend not ready');
+    const data=await scoreRes.json();
+    DISTRICTS=data.districts;
+    if(geoRes&&geoRes.ok){
+      const gj=await geoRes.json();
+      gj.features.forEach(f=>{
+        const raw=f.properties.district_id;
+        f.properties.district_id=GEO_ID_MAP[raw]||raw;
+      });
+      realGeoJSON=gj;
+    }
+    if(settlRes&&settlRes.ok){
+      const sd=await settlRes.json();
+      settlements=sd.settlements||[];
+      console.log('Loaded',settlements.length,'real OSM settlements for heatmap');
+    } else {
+      console.warn('settlements.json not available — heatmap will use district centroids');
+    }
+    console.log('Loaded real data for',DISTRICTS.length,'districts, GeoJSON:',!!realGeoJSON);
+    document.getElementById('loading').style.display='none';
+    buildSliders();
+    calculate();  // auto-run with default weights so map is immediately colored
+  } catch(e){
+    console.warn('Backend not available, retrying in 3s…',e.message);
+    setTimeout(loadData,3000);
+  }
+}
+
+// ═══════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════
+function tier(s){return s>=75?'Critical':s>=50?'High':s>=25?'Moderate':'Low';}
+function tierCol(t){return t==='Critical'?'#d62728':t==='High'?'#ff7f0e':t==='Moderate'?'#e6b800':'#2ca02c';}
+function scoreCol(s,mn,mx){
+  // Relative normalization: stretch current result range to full color scale
+  // so ANY weight change produces a visible color shift
+  const lo=mn??0, hi=mx??100;
+  const t=hi>lo?(s-lo)/(hi-lo):0.5;
+  return d3.interpolateRdYlGn(1-t);
+}
+function hav(a,b,c,d){const R=6371,dL=(c-a)*Math.PI/180,dN=(d-b)*Math.PI/180;const x=Math.sin(dL/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dN/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
+function blkOnline(h){return h.solar>=30&&h.gen>=50;}
+function fmtD(km){return km<1?Math.round(km*1000)+'m':km.toFixed(1)+'km';}
+function fmtT(m){return m<60?Math.round(m)+'min':Math.floor(m/60)+'h '+Math.round(m%60)+'m';}
+function hubCol(h){
+  if(h.type==='Hospital'||h.type==='THQ Hospital')return'#0ea5e9';
+  if(h.type==='BHU')return'#22d3ee';
+  if(h.type==='Warehouse')return'#a855f7';
+  return'#f59e0b';
+}
+
+// ═══════════════════════════════════════
+// AHP CALCULATION
+// ═══════════════════════════════════════
+function calculate(){
+  if(!DISTRICTS.length)return;
+  const total=Object.values(weights).reduce((a,b)=>a+b,0);
+  const nw=Object.fromEntries(CRITERIA.map(c=>[c.id,weights[c.id]/total]));
+
+  results=DISTRICTS.map(d=>{
+    let score=0;
+    const contrib={};
+    CRITERIA.forEach(c=>{
+      const ws=nw[c.id]*d.scores[c.id];
+      score+=ws;
+      contrib[c.id]={score:d.scores[c.id],weight:nw[c.id],weighted:ws,label:c.label};
+    });
+    const drivers=Object.entries(contrib).sort((a,b)=>b[1].weighted-a[1].weighted).slice(0,2);
+    const t=tier(score);
+    return{...d,composite:score,tier:t,tierColor:tierCol(t),drivers,contrib};
+  }).sort((a,b)=>b.composite-a.composite);
+  results.forEach((d,i)=>d.rank=i+1);
+
+  renderChoropleth();
+  renderHeatmap();
+  renderHubs();
+  updateRankings();
+  updateBadges();
+  updateCoverage();
+  if(userLat!==null)findNearest();
+}
+
+// ═══════════════════════════════════════
+// CHOROPLETH
+// ═══════════════════════════════════════
+function renderChoropleth(){
+  if(chorLyr){chorLyr.remove();chorLyr=null;}
+  const sm={};
+  (results||[]).forEach(d=>sm[d.id]=d);
+
+  let geoData;
+  if(realGeoJSON){
+    geoData=realGeoJSON;
+  } else {
+    const features=DISTRICTS.map(d=>{
+      const b=DBOUNDS[d.id];
+      if(!b)return null;
+      return{type:'Feature',properties:{district_id:d.id},
+        geometry:{type:'Polygon',coordinates:[[[b[0],b[1]],[b[2],b[1]],[b[2],b[3]],[b[0],b[3]],[b[0],b[1]]]]}};
+    }).filter(Boolean);
+    geoData={type:'FeatureCollection',features};
+  }
+
+  // Compute range of current composites for relative color mapping
+  const composites=Object.values(sm).map(d=>d.composite).filter(x=>x!=null);
+  const cMin=composites.length?Math.min(...composites):0;
+  const cMax=composites.length?Math.max(...composites):100;
+
+  chorLyr=L.geoJSON(geoData,{
+    style:f=>{
+      const did=f.properties.district_id||f.properties.id;
+      const d=sm[did];
+      const score=d?d.composite:null;
+      const col=score!=null?scoreCol(score,cMin,cMax):'#1f2937';
+      const blkDark=blackoutOn&&d&&d.tier==='Critical';
+      return{fillColor:col,fillOpacity:blkDark?.85:.72,color:'#0d1117',weight:1.5};
+    },
+    onEachFeature:(f,lyr)=>{
+      const did=f.properties.district_id||f.properties.id;
+      const d=sm[did]||DISTRICTS.find(x=>x.id===did);
+      const score=d&&d.composite!=null?d.composite.toFixed(1):'—';
+      const t=d&&d.tier?d.tier:'';
+      const tc=d?tierCol(t):'#6b7280';
+      const raw=d&&d.raw?
+        `<div class="tt-dr">⚡ ${d.raw.load_shedding_h}h/day · 🌡 ${d.raw.mean_max_temp_c}°C · 🏥 ${d.raw.hospitals_osm} hospitals</div>`:'';
+      const drivers=d&&d.drivers?
+        `<div class="tt-dr">▲ ${d.drivers.map(([,v])=>v.label.split(' ').slice(0,2).join(' ')+' '+v.score.toFixed(0)).join(' | ')}</div>`:'';
+      const dname=d?d.name:(f.properties.name||did);
+      lyr.bindTooltip(
+        `<div class="tt-n" style="color:${tc}">${dname}</div>
+         <div class="tt-s" style="color:${tc}">${score}</div>
+         <span class="tt-t" style="background:${tc}25;border:1px solid ${tc};color:${tc}">${t}</span>
+         ${raw}${drivers}
+         <div class="tt-p">Pop: ${d?d.population_m.toFixed(2)+'M':'—'}</div>`,
+        {sticky:true,className:'ltip'});
+      lyr.on('mouseover',function(){this.setStyle({fillOpacity:.95,weight:2.5,color:'#e2e8f0'});});
+      lyr.on('mouseout', function(){chorLyr&&chorLyr.resetStyle(this);});
+      lyr.on('click',()=>{
+        if(!d)return;
+        if(d.lat&&d.lng)map.flyTo([d.lat,d.lng],9,{duration:.7});
+        if(!d.contrib)return;
+        const rows=Object.entries(d.contrib)
+          .sort((a,b)=>b[1].weighted-a[1].weighted)
+          .map(([,v])=>`<tr style="border-bottom:1px solid rgba(255,255,255,.06)">
+            <td style="padding:3px 6px;color:var(--mut)">${v.label.split(' ').slice(0,2).join(' ')}</td>
+            <td style="padding:3px 6px;text-align:right">${v.score.toFixed(0)}</td>
+            <td style="padding:3px 6px;text-align:right;color:var(--acc)">${(v.weight*100).toFixed(1)}%</td>
+            <td style="padding:3px 6px;text-align:right;font-weight:700;color:${tierCol(tier(v.score))}">${v.weighted.toFixed(1)}</td>
+          </tr>`).join('');
+        L.popup({maxWidth:290,className:'lpop'})
+          .setLatLng([d.lat,d.lng])
+          .setContent(`<div style="font-size:11px;font-weight:700;margin-bottom:6px;color:${tc}">${d.name||dname} — Risk: ${d.composite.toFixed(1)} (${t})</div>
+            <table style="width:100%;border-collapse:collapse;font-size:10px">
+              <tr style="color:var(--mut);font-size:9px"><th style="padding:2px 6px;text-align:left">Criterion</th><th style="padding:2px 6px">Score</th><th style="padding:2px 6px">Wt%</th><th style="padding:2px 6px">Contrib</th></tr>
+              ${rows}
+            </table>
+            <div style="font-size:9px;color:var(--mut);margin-top:5px">Click Calculate to update with new weights</div>`)
+          .openOn(map);
+      });
+    }
+  }).addTo(map);
+}
+
+// ═══════════════════════════════════════
+// HEATMAP — real points (settlements or tehsil fallback)
+// ═══════════════════════════════════════
+function renderHeatmap(){
+  if(heatLyr){heatLyr.remove();heatLyr=null;}
+  if(!results)return;
+
+  const scoreMap={};
+  results.forEach(d=>{ scoreMap[d.id]=d.composite; });
+
+  let pts=[];
+  let usingReal=false;
+
+  if(settlements.length>0){
+    // REAL: OSM settlement points from settlements.json
+    usingReal=true;
+    const maxPop=Math.max(...settlements.map(s=>s.population||1));
+    settlements.forEach(s=>{
+      const risk=(scoreMap[s.district_id]||0)/100;
+      const popW=Math.sqrt((s.population||500)/maxPop);
+      const intensity=risk*popW;
+      if(intensity>0.02) pts.push([s.lat,s.lon,intensity]);
+    });
+  } else {
+    // FALLBACK: tehsil-level hardcoded centres (39 real sub-district points)
+    const maxPop=Math.max(...TEHSILS.map(t=>t.pop));
+    TEHSILS.forEach(t=>{
+      const risk=(scoreMap[t.district]||0)/100;
+      const popW=Math.sqrt(t.pop/maxPop);
+      const intensity=risk*popW;
+      if(intensity>0.01) pts.push([t.lat,t.lng,intensity]);
+    });
+  }
+
+  heatLyr=L.heatLayer(pts,{
+    radius: usingReal?16:22,
+    blur:   usingReal?12:18,
+    maxZoom:13,
+    max:0.65,
+    minOpacity:0.28,
+    gradient:{0.2:'#2ca02c',0.45:'#e6b800',0.72:'#ff7f0e',1.0:'#d62728'}
+  }).addTo(map);
+}
+
+// ═══════════════════════════════════════
+// HUB MARKERS
+// ═══════════════════════════════════════
+function renderHubs(){
+  hubLayers.forEach(m=>m.remove());
+  hubLayers=[];
+
+  HUBS.forEach(h=>{
+    const online=!blackoutOn||blkOnline(h);
+    const show=filterOK(h);
+    const col=hubCol(h);
+
+    const icon=L.divIcon({
+      className:'',
+      html:`<div class="hub-mk${online?'':' offline'}${show?'':' dimmed'}">
+              <div class="hub-core" style="background:${col}"></div>
+              <div class="hub-ring" style="background:${col}"></div>
+            </div>`,
+      iconSize:[40,40],
+      iconAnchor:[20,20],
+      tooltipAnchor:[0,-14]
+    });
+
+    const mk=L.marker([h.lat,h.lng],{icon,zIndexOffset:1000}).addTo(map);
+    mk.bindTooltip(
+      `<strong>${h.name}</strong><br>${h.type} · ${h.district}<br>⚡${h.solar}kWh 💧${(h.water/1000).toFixed(0)}kL/d 👥${h.cap}`,
+      {className:'ltip',sticky:true}
+    );
+    mk.on('click',()=>openHub(h));
+    hubLayers.push(mk);
+  });
+
+  // Populate sidebar hub directory
+  const dirEl=document.getElementById('hub-dir-list');
+  if(dirEl){
+    dirEl.innerHTML=HUBS.map(h=>{
+      const col=hubCol(h);
+      const online=!blackoutOn||blkOnline(h);
+      return`<div class="hdi" onclick="flyToHub(${h.id})">
+        <div class="hd-dot" style="background:${online?col:'#374151'}"></div>
+        <div style="flex:1;min-width:0">
+          <div class="hd-name">${h.name}</div>
+          <div class="hd-dist">${h.district} · ${h.type}</div>
+        </div>
+        <button class="hd-route" onclick="event.stopPropagation();routeToHub(${h.id})">Route</button>
+      </div>`;
+    }).join('');
+  }
+}
+
+function updateHubIcons(){
+  hubLayers.forEach((mk,i)=>{
+    const h=HUBS[i];
+    const online=!blackoutOn||blkOnline(h);
+    const show=filterOK(h);
+    const col=hubCol(h);
+    mk.setIcon(L.divIcon({
+      className:'',
+      html:`<div class="hub-mk${online?'':' offline'}${show?'':' dimmed'}">
+              <div class="hub-core" style="background:${col}"></div>
+              <div class="hub-ring" style="background:${col}"></div>
+            </div>`,
+      iconSize:[40,40],iconAnchor:[20,20],tooltipAnchor:[0,-14]
+    }));
+  });
+}
+
+function filterOK(h){
+  if(activeF==='all')return true;
+  if(activeF==='power')return h.solar>=30||h.gen>=50;
+  if(activeF==='water')return h.water>=3000;
+  if(activeF==='medical')return h.med.includes('Trauma')||h.med.includes('Tertiary');
+  if(activeF==='comms')return h.sat;
+  if(activeF==='food')return h.food>=7;
+  return true;
+}
+
+// ═══════════════════════════════════════
+// RANKINGS
+// ═══════════════════════════════════════
+function updateRankings(){
+  const el=document.getElementById('rankings');
+  document.getElementById('rank-hint').style.display='none';
+  if(!results){el.innerHTML='';return;}
+  el.innerHTML=results.map(d=>{
+    const cov=blackoutOn?blkCov(d):proxCov(d);
+    const ring=blackoutOn?ringSVG(cov):'';
+    const gap=blackoutOn&&cov<30?`<span style="color:var(--crit);font-size:9px;margin-left:2px">⚠</span>`:'';
+    return`<div class="ri" onclick="flyTo('${d.id}')">
+      <span class="rn">#${d.rank}</span>
+      ${ring}
+      <span class="rm">${d.name}</span>${gap}
+      <span class="rs" style="color:${d.tierColor}">${d.composite.toFixed(1)}</span>
+    </div>`;
+  }).join('');
+}
+
+function ringSVG(pct){
+  const c=56.5,f=c*(pct/100),col=pct>=60?'#2ca02c':pct>=30?'#e6b800':'#d62728';
+  return`<svg width="18" height="18" viewBox="0 0 24 24" style="transform:rotate(-90deg);flex-shrink:0">
+    <circle cx="12" cy="12" r="9" fill="none" stroke="#21262d" stroke-width="3"/>
+    <circle cx="12" cy="12" r="9" fill="none" stroke="${col}" stroke-width="3" stroke-linecap="round" stroke-dasharray="${f.toFixed(1)} ${c}"/>
+  </svg>`;
+}
+
+// ═══════════════════════════════════════
+// BADGES
+// ═══════════════════════════════════════
+function updateBadges(){
+  if(!results)return;
+  const c={Critical:0,High:0,Moderate:0,Low:0};
+  results.forEach(d=>c[d.tier]++);
+  document.getElementById('tbadges').innerHTML=
+    `<span class="tbadge tbc">${c.Critical} Crit</span>
+     <span class="tbadge tbh">${c.High} High</span>
+     <span class="tbadge tbm">${c.Moderate} Mod</span>
+     <span class="tbadge tbl">${c.Low} Low</span>`;
+  document.getElementById('tbar-sum').textContent=`Top risk: ${results[0].name} (${results[0].composite.toFixed(1)})`;
+}
+
+// ═══════════════════════════════════════
+// COVERAGE
+// ═══════════════════════════════════════
+function proxCov(d){
+  const ds=HUBS.map(h=>hav(d.lat,d.lng,h.lat,h.lng));
+  return Math.max(0,Math.min(100,Math.round((1-(Math.min(...ds)-5)/45)*100)));
+}
+function blkCov(d){
+  const on=HUBS.filter(blkOnline);
+  if(!on.length)return 0;
+  const ds=on.map(h=>hav(d.lat,d.lng,h.lat,h.lng));
+  return Math.max(0,Math.min(100,Math.round((1-(Math.min(...ds)-5)/45)*100)));
+}
+
+function updateCoverage(){
+  const el=document.getElementById('cov-sum');
+  const src=results||DISTRICTS;
+  if(!src.length){el.innerHTML='';return;}
+  el.innerHTML=src.map(d=>{
+    const cov=blackoutOn?blkCov(d):proxCov(d);
+    const col=cov>=60?'var(--low)':cov>=30?'var(--mod)':'var(--crit)';
+    return`<div class="covr">
+      <span class="covn">${d.name}</span>
+      <div class="covb"><div class="covf" style="width:${cov}%;background:${col}"></div></div>
+      <span class="covp" style="color:${col}">${cov}%</span>
+    </div>`;
+  }).join('');
+}
+
+function flyTo(id){
+  const d=(results||DISTRICTS).find(x=>x.id===id);
+  if(d)map.flyTo([d.lat,d.lng],9,{duration:.8});
+}
+
+function flyToHub(id){
+  const h=HUBS.find(x=>x.id===id);
+  if(!h)return;
+  map.flyTo([h.lat,h.lng],12,{duration:.9});
+  openHub(h);
+}
+
+function routeToHub(id){
+  const h=HUBS.find(x=>x.id===id);
+  if(!h)return;
+  map.flyTo([h.lat,h.lng],11,{duration:.7});
+  openHub(h);
+  setTimeout(()=>getDirections(),900);
+}
+
+// ═══════════════════════════════════════
+// SLIDERS
+// ═══════════════════════════════════════
+function buildSliders(){
+  const el=document.getElementById('sliders');
+  el.innerHTML=CRITERIA.map(c=>`
+    <div class="cr">
+      <div class="ct">
+        <span class="ci">${c.icon}</span>
+        <span class="cn">${c.label}</span>
+        <span class="cp" id="cp-${c.id}">14.3%</span>
+      </div>
+      <div class="sr">
+        <input type="range" min="1" max="10" value="${weights[c.id]}" id="sl-${c.id}"
+          oninput="onSl('${c.id}',this.value)">
+        <span class="sv" id="sv-${c.id}">${weights[c.id]}</span>
+      </div>
+    </div>`).join('');
+  refreshPct();
+}
+
+function onSl(id,v){
+  weights[id]=+v;
+  document.getElementById('sv-'+id).textContent=v;
+  refreshPct();
+}
+function refreshPct(){
+  const t=Object.values(weights).reduce((a,b)=>a+b,0);
+  CRITERIA.forEach(c=>{
+    const e=document.getElementById('cp-'+c.id);
+    if(e)e.textContent=((weights[c.id]/t)*100).toFixed(1)+'%';
+  });
+}
+function resetW(){
+  CRITERIA.forEach(c=>{weights[c.id]=5;
+    const sl=document.getElementById('sl-'+c.id),sv=document.getElementById('sv-'+c.id);
+    if(sl)sl.value=5;if(sv)sv.textContent='5';});
+  refreshPct();
+}
+
+// ═══════════════════════════════════════
+// FILTER
+// ═══════════════════════════════════════
+function setF(f,btn){
+  activeF=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');
+  updateHubIcons();
+}
+
+// ═══════════════════════════════════════
+// BLACKOUT MODE
+// ═══════════════════════════════════════
+function toggleBlackout(){
+  blackoutOn=!blackoutOn;
+  const btn=document.getElementById('blk-btn');
+  btn.classList.toggle('on',blackoutOn);
+  btn.textContent=blackoutOn?'⚡ BLACKOUT: ON':'⚡ BLACKOUT MODE';
+  document.getElementById('blk-overlay').style.display=blackoutOn?'block':'none';
+  updateHubIcons();
+  updateRankings();
+  updateCoverage();
+  renderChoropleth();
+  if(selHub)refreshHubPanel(selHub);
+}
+
+// ═══════════════════════════════════════
+// HUB PANEL
+// ═══════════════════════════════════════
+function openHub(h){selHub=h;refreshHubPanel(h);document.getElementById('hub-panel').classList.add('open');}
+function closeHub(){selHub=null;document.getElementById('hub-panel').classList.remove('open');if(routeLyr){routeLyr.remove();routeLyr=null;}}
+
+function refreshHubPanel(h){
+  const col=hubCol(h);
+  document.getElementById('hp-name').textContent=h.name;
+  document.getElementById('hp-badge').textContent=h.type;
+  document.getElementById('hp-badge').style.cssText=`background:${col}22;border:1px solid ${col};color:${col}`;
+  document.getElementById('hp-dlabel').textContent=h.district+' District';
+  const online=blkOnline(h);
+  document.getElementById('hp-blk').innerHTML=blackoutOn
+    ?`<div class="blk-badge ${online?'bon':'boff'}">${online?'⚡ ACTIVE IN BLACKOUT ✓':'✗ OFFLINE IN BLACKOUT'}</div>`:'';
+  document.getElementById('hp-res').innerHTML=`
+    <div class="rgi"><div class="ri2">⚡</div><div class="rl">SOLAR (est.)</div><div class="rv">${h.solar>0?h.solar+' kWh/d':'None'}</div></div>
+    <div class="rgi"><div class="ri2">🔋</div><div class="rl">GENERATOR (est.)</div><div class="rv">${h.gen>0?h.gen+' kVA':'None'}</div></div>
+    <div class="rgi"><div class="ri2">💧</div><div class="rl">WATER (est.)</div><div class="rv">${h.water.toLocaleString()} L/d</div></div>
+    <div class="rgi"><div class="ri2">🏥</div><div class="rl">MEDICAL</div><div class="rv">${h.med}</div></div>
+    <div class="rgi"><div class="ri2">📡</div><div class="rl">SATELLITE</div><div class="rv">${h.sat?'Reported ✓':'Not reported'}</div></div>
+    <div class="rgi"><div class="ri2">🍱</div><div class="rl">FOOD (est.)</div><div class="rv">${h.food} days</div></div>
+    <div class="rgi" style="grid-column:1/-1"><div class="ri2">👥</div><div class="rl">CAPACITY (est.)</div><div class="rv">${h.cap.toLocaleString()} persons</div></div>`;
+  document.getElementById('hp-dist-info').innerHTML=userLat!=null
+    ?`<div style="font-size:11px;color:var(--mut);margin:6px 0">📍 ${fmtD(hav(userLat,userLng,h.lat,h.lng))} straight-line from you</div>`:'';
+  document.getElementById('hp-routing').innerHTML='';
+  document.getElementById('hp-notes').innerHTML=
+    `<div style="margin-bottom:5px">${h.notes}</div>
+     <div style="color:var(--crit);font-size:9px;margin-top:4px">⚠ Resource figures are planning estimates. Verify with PDMA / Health Department before operational use.</div>`;
+}
+
+// ═══════════════════════════════════════
+// ROUTING (OSRM — no API key needed)
+// ═══════════════════════════════════════
+async function getDirections(){
+  if(!selHub)return;
+  if(userLat===null){alert('Set your location first (use the location button or click the map).');return;}
+
+  const el=document.getElementById('hp-routing');
+  el.innerHTML='<div style="color:var(--mut);font-size:11px;margin-top:8px">⏳ Fetching route…</div>';
+  if(routeLyr){routeLyr.remove();routeLyr=null;}
+
+  const sl=selHub, ul={lat:userLat,lng:userLng};
+  const crowKm=hav(ul.lat,ul.lng,sl.lat,sl.lng);
+
+  let roadKm=null, isRealRoute=false;
+
+  // Try OSRM driving (free, no key, CORS-enabled)
+  try{
+    const r=await fetch(
+      `https://router.project-osrm.org/route/v1/driving/${sl.lng},${sl.lat};${ul.lng},${ul.lat}?overview=full&geometries=geojson`,
+      {signal:AbortSignal.timeout(8000)}
+    );
+    const j=await r.json();
+    if(j.code==='Ok'&&j.routes?.[0]){
+      roadKm=j.routes[0].distance/1000;
+      const pts=j.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);
+      routeLyr=L.polyline(pts,{color:'#00d4ff',weight:4,opacity:.92}).addTo(map);
+      map.fitBounds(routeLyr.getBounds(),{padding:[60,60]});
+      isRealRoute=true;
+    }
+  }catch(e){console.warn('OSRM failed:',e.message);}
+
+  // Fallback: draw straight dashed line
+  if(!isRealRoute){
+    routeLyr=L.polyline([[ul.lat,ul.lng],[sl.lat,sl.lng]],
+      {color:'#00d4ff',weight:2.5,opacity:.8,dashArray:'12,7'}).addTo(map);
+    map.fitBounds(routeLyr.getBounds(),{padding:[60,60]});
+  }
+
+  // Build time table — road distance ≈ crow × detour factor per mode
+  const modes=[
+    {icon:'🚶',label:'Walking',  detour:1.35, spd:5  },
+    {icon:'🚲',label:'Bike',     detour:1.30, spd:15 },
+    {icon:'🛺',label:'Rickshaw', detour:1.25, spd:28 },
+    {icon:'🚗',label:'Car',      detour:1.15, spd:65 },
+  ];
+  const rows=modes.map(m=>{
+    const d=(isRealRoute&&m.label==='Car')?roadKm:(crowKm*m.detour);
+    return`<tr>
+      <td>${m.icon} ${m.label}</td>
+      <td>${fmtD(d)}</td>
+      <td>${fmtT((d/m.spd)*60)}</td>
+    </tr>`;
+  });
+  el.innerHTML=`<table class="rt">
+    <thead><tr><th>Mode</th><th>Distance</th><th>Time</th></tr></thead>
+    <tbody>${rows.join('')}</tbody>
+  </table>
+  <div style="font-size:9px;color:var(--mut);margin-top:5px">
+    ${isRealRoute?'✓ Road route (OSRM)':'— Straight-line estimate (OSRM unavailable)'}
+  </div>`;
+}
+
+// ═══════════════════════════════════════
+// LOCATION
+// ═══════════════════════════════════════
+function useGeo(){
+  document.getElementById('modal').style.display='none';
+  if(!navigator.geolocation){alert('Geolocation unavailable.');return;}
+  navigator.geolocation.getCurrentPosition(
+    p=>setUserLoc(p.coords.latitude,p.coords.longitude),
+    ()=>alert('Location denied. Click the map to set manually.')
+  );
+}
+function useManual(){
+  document.getElementById('modal').style.display='none';
+  manualMode=true;
+  map.getContainer().classList.add('crosshair');
+}
+function skipLoc(){document.getElementById('modal').style.display='none';}
+
+function setUserLoc(lat,lng){
+  userLat=lat;userLng=lng;
+  if(userMark)userMark.remove();
+  userMark=L.marker([lat,lng],{
+    icon:L.divIcon({className:'',html:'<div class="uloc"></div>',iconSize:[14,14],iconAnchor:[7,7]}),
+    zIndexOffset:2000
+  }).addTo(map).bindTooltip('Your Location',{className:'ltip'});
+  findNearest();
+  if(selHub)refreshHubPanel(selHub);
+}
+
+function findNearest(){
+  const sorted=[...HUBS].map(h=>({...h,dist:hav(userLat,userLng,h.lat,h.lng)})).sort((a,b)=>a.dist-b.dist).slice(0,3);
+  document.getElementById('near-hint').style.display='none';
+  document.getElementById('near-list').innerHTML=sorted.map(h=>`
+    <div class="ni" onclick="openHub(HUBS.find(x=>x.id===${h.id}))">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="nin">${h.name}</div>
+        <button class="bsm" style="font-size:9px" onclick="event.stopPropagation();openHub(HUBS.find(x=>x.id===${h.id}))">Open</button>
+      </div>
+      <div class="nid">${fmtD(h.dist)} · ${h.district}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════
+loadData();
+</script>
+</body>
+</html>

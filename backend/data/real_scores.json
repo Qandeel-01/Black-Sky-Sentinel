@@ -1,0 +1,309 @@
+{
+  "districts": [
+    {
+      "id": "multan",
+      "name": "Multan",
+      "lat": 30.157,
+      "lng": 71.524,
+      "area_km2": 3720,
+      "population_m": 4.567,
+      "raw": {
+        "load_shedding_h": 13.5,
+        "flood_affected_2022": 120000,
+        "mean_max_temp_c": 37.31,
+        "pta_4g_pct": 68,
+        "hospitals_osm": 61,
+        "clinics_osm": 13,
+        "power_substations_osm": 32,
+        "comm_towers_osm": 0
+      },
+      "scores": {
+        "blackout": 0.0,
+        "flood": 1.9,
+        "heat": 34.0,
+        "internet": 32.0,
+        "health": 49.2,
+        "infra": 20.4,
+        "popexp": 6.8
+      }
+    },
+    {
+      "id": "khanewal",
+      "name": "Khanewal",
+      "lat": 30.301,
+      "lng": 71.932,
+      "area_km2": 4349,
+      "population_m": 3.166,
+      "raw": {
+        "load_shedding_h": 16.0,
+        "flood_affected_2022": 95000,
+        "mean_max_temp_c": 37.19,
+        "pta_4g_pct": 52,
+        "hospitals_osm": 22,
+        "clinics_osm": 13,
+        "power_substations_osm": 47,
+        "comm_towers_osm": 0
+      },
+      "scores": {
+        "blackout": 31.2,
+        "flood": 2.6,
+        "heat": 27.7,
+        "internet": 48.0,
+        "health": 65.3,
+        "infra": 0.0,
+        "popexp": 4.5
+      }
+    },
+    {
+      "id": "lodhran",
+      "name": "Lodhran",
+      "lat": 29.533,
+      "lng": 71.633,
+      "area_km2": 2778,
+      "population_m": 1.82,
+      "raw": {
+        "load_shedding_h": 17.0,
+        "flood_affected_2022": 130000,
+        "mean_max_temp_c": 37.75,
+        "pta_4g_pct": 48,
+        "hospitals_osm": 22,
+        "clinics_osm": 4,
+        "power_substations_osm": 19,
+        "comm_towers_osm": 3
+      },
+      "scores": {
+        "blackout": 43.8,
+        "flood": 10.6,
+        "heat": 57.1,
+        "internet": 52.0,
+        "health": 55.2,
+        "infra": 26.7,
+        "popexp": 7.7
+      }
+    },
+    {
+      "id": "vehari",
+      "name": "Vehari",
+      "lat": 30.045,
+      "lng": 72.352,
+      "area_km2": 4364,
+      "population_m": 2.817,
+      "raw": {
+        "load_shedding_h": 15.5,
+        "flood_affected_2022": 75000,
+        "mean_max_temp_c": 36.83,
+        "pta_4g_pct": 55,
+        "hospitals_osm": 0,
+        "clinics_osm": 18,
+        "power_substations_osm": 35,
+        "comm_towers_osm": 0
+      },
+      "scores": {
+        "blackout": 25.0,
+        "flood": 1.9,
+        "heat": 8.9,
+        "internet": 45.0,
+        "health": 79.9,
+        "infra": 25.8,
+        "popexp": 2.7
+      }
+    },
+    {
+      "id": "bahawalpur",
+      "name": "Bahawalpur",
+      "lat": 29.395,
+      "lng": 71.678,
+      "area_km2": 24830,
+      "population_m": 4.052,
+      "raw": {
+        "load_shedding_h": 15.0,
+        "flood_affected_2022": 280000,
+        "mean_max_temp_c": 37.91,
+        "pta_4g_pct": 42,
+        "hospitals_osm": 36,
+        "clinics_osm": 9,
+        "power_substations_osm": 0,
+        "comm_towers_osm": 0
+      },
+      "scores": {
+        "blackout": 18.8,
+        "flood": 10.1,
+        "heat": 65.4,
+        "internet": 58.0,
+        "health": 65.2,
+        "infra": 100.0,
+        "popexp": 21.3
+      }
+    },
+    {
+      "id": "bahawalnagar",
+      "name": "Bahawalnagar",
+      "lat": 29.998,
+      "lng": 73.251,
+      "area_km2": 8878,
+      "population_m": 2.73,
+      "raw": {
+        "load_shedding_h": 16.0,
+        "flood_affected_2022": 45000,
+        "mean_max_temp_c": 36.66,
+        "pta_4g_pct": 50,
+        "hospitals_osm": 0,
+        "clinics_osm": 87,
+        "power_substations_osm": 0,
+        "comm_towers_osm": 0
+      },
+      "scores": {
+        "blackout": 31.2,
+        "flood": 0.0,
+        "heat": 0.0,
+        "internet": 50.0,
+        "health": 0.0,
+        "infra": 100.0,
+        "popexp": 0.0
+      }
+    },
+    {
+      "id": "ry_khan",
+      "name": "Rahim Yar Khan",
+      "lat": 28.42,
+      "lng": 70.295,
+      "area_km2": 11880,
+      "population_m": 4.846,
+      "raw": {
+        "load_shedding_h": 18.5,
+        "flood_affected_2022": 520000,
+        "mean_max_temp_c": 38.57,
+        "pta_4g_pct": 40,
+        "hospitals_osm": 10,
+        "clinics_osm": 2,
+        "power_substations_osm": 0,
+        "comm_towers_osm": 11
+      },
+      "scores": {
+        "blackout": 62.5,
+        "flood": 17.5,
+        "heat": 100.0,
+        "internet": 60.0,
+        "health": 92.2,
+        "infra": 91.4,
+        "popexp": 43.0
+      }
+    },
+    {
+      "id": "dg_khan",
+      "name": "Dera Ghazi Khan",
+      "lat": 30.048,
+      "lng": 70.641,
+      "area_km2": 11922,
+      "population_m": 3.244,
+      "raw": {
+        "load_shedding_h": 19.5,
+        "flood_affected_2022": 350000,
+        "mean_max_temp_c": 37.8,
+        "pta_4g_pct": 35,
+        "hospitals_osm": 0,
+        "clinics_osm": 1,
+        "power_substations_osm": 0,
+        "comm_towers_osm": 13
+      },
+      "scores": {
+        "blackout": 75.0,
+        "flood": 17.6,
+        "heat": 59.7,
+        "internet": 65.0,
+        "health": 99.0,
+        "infra": 89.9,
+        "popexp": 27.6
+      }
+    },
+    {
+      "id": "muzaffargarh",
+      "name": "Muzaffargarh",
+      "lat": 30.072,
+      "lng": 71.194,
+      "area_km2": 8249,
+      "population_m": 3.833,
+      "raw": {
+        "load_shedding_h": 20.0,
+        "flood_affected_2022": 750000,
+        "mean_max_temp_c": 37.3,
+        "pta_4g_pct": 38,
+        "hospitals_osm": 63,
+        "clinics_osm": 11,
+        "power_substations_osm": 31,
+        "comm_towers_osm": 10
+      },
+      "scores": {
+        "blackout": 81.2,
+        "flood": 34.4,
+        "heat": 33.5,
+        "internet": 62.0,
+        "health": 39.4,
+        "infra": 54.0,
+        "popexp": 63.8
+      }
+    },
+    {
+      "id": "layyah",
+      "name": "Layyah",
+      "lat": 30.963,
+      "lng": 70.938,
+      "area_km2": 6291,
+      "population_m": 1.908,
+      "raw": {
+        "load_shedding_h": 17.5,
+        "flood_affected_2022": 190000,
+        "mean_max_temp_c": 37.32,
+        "pta_4g_pct": 32,
+        "hospitals_osm": 0,
+        "clinics_osm": 0,
+        "power_substations_osm": 32,
+        "comm_towers_osm": 0
+      },
+      "scores": {
+        "blackout": 50.0,
+        "flood": 16.0,
+        "heat": 34.6,
+        "internet": 68.0,
+        "health": 100.0,
+        "infra": 52.9,
+        "popexp": 13.1
+      }
+    },
+    {
+      "id": "rajanpur",
+      "name": "Rajanpur",
+      "lat": 29.104,
+      "lng": 70.33,
+      "area_km2": 12319,
+      "population_m": 2.142,
+      "raw": {
+        "load_shedding_h": 21.5,
+        "flood_affected_2022": 1150000,
+        "mean_max_temp_c": 38.17,
+        "pta_4g_pct": 20,
+        "hospitals_osm": 0,
+        "clinics_osm": 0,
+        "power_substations_osm": 29,
+        "comm_towers_osm": 15
+      },
+      "scores": {
+        "blackout": 100.0,
+        "flood": 100.0,
+        "heat": 79.1,
+        "internet": 80.0,
+        "health": 100.0,
+        "infra": 67.0,
+        "popexp": 100.0
+      }
+    }
+  ],
+  "sources": {
+    "population": "Pakistan Bureau of Statistics – Census 2023",
+    "load_shedding": "NEPRA State of Industry Report 2023 / MEPCO press releases",
+    "flood": "NDMA Situation Reports – Monsoon 2022",
+    "temperature": "Open-Meteo Historical Archive – May-Sep 2023",
+    "amenities": "OpenStreetMap via Overpass API – June 2026",
+    "internet": "PTA Annual Report 2023"
+  }
+}
