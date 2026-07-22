@@ -2,10 +2,6 @@
 
 A geospatial risk analysis dashboard that ranks 11 districts in Southern Punjab, Pakistan by composite risk scores. It combines data from multiple authoritative sources and uses the **Analytic Hierarchy Process (AHP)** to let decision-makers explore, weight, and visualize district-level risks in real time.
 
-![Tech Stack](https://img.shields.io/badge/Backend-Flask-blue) ![Tech Stack](https://img.shields.io/badge/Frontend-React%2018%20%2B%20Vite-61DAFB) ![Map](https://img.shields.io/badge/Maps-Leaflet-199900) ![License](https://img.shields.io/badge/License-MIT-green)
-
----
-
 ## What It Does
 
 The dashboard synthesizes 7 risk criteria into a single composite score for each district:
@@ -26,8 +22,6 @@ Users can adjust criterion weights via sliders or choose a **preset scenario** (
 
 Multan · Khanewal · Rajanpur · Dera Ghazi Khan · Bahawalpur · Bahawalnagar · Lodhran · Pakpattan · Sahiwal · Okara · Rahim Yar Khan
 
----
-
 ## Features
 
 - **Interactive choropleth map** — districts colored by risk tier (Critical / High / Moderate / Low)
@@ -39,8 +33,6 @@ Multan · Khanewal · Rajanpur · Dera Ghazi Khan · Bahawalpur · Bahawalnagar 
 - **Scenario comparison** — side-by-side comparison of multiple scenarios via the API
 - **WCAG 2.1 AA accessible** — keyboard navigable, screen-reader friendly, sufficient color contrast
 
----
-
 ## Tech Stack
 
 | Layer | Technology |
@@ -50,8 +42,6 @@ Multan · Khanewal · Rajanpur · Dera Ghazi Khan · Bahawalpur · Bahawalnagar 
 | Maps | Leaflet.js with CartoDB dark basemap |
 | Data | JSON files (no database required) |
 | Styling | Custom CSS with CSS variables (dark theme) |
-
----
 
 ## Quickstart
 
@@ -107,8 +97,6 @@ start.bat
 
 This launches both the backend and frontend in separate console windows.
 
----
-
 ## Configuration
 
 Copy the example environment files and edit as needed:
@@ -135,8 +123,6 @@ LOG_PATH=logs
 VITE_API_BASE_URL=http://localhost:5000
 ```
 
----
-
 ## API Reference
 
 | Method | Endpoint | Description |
@@ -159,8 +145,6 @@ curl -X POST http://localhost:5000/api/calculate \
   -H "Content-Type: application/json" \
   -d '{"weights": {"blackout": 8, "flood": 6, "heat": 4, "coverage": 5, "healthcare": 7, "infrastructure": 5, "population": 6}}'
 ```
-
----
 
 ## Project Structure
 
@@ -189,8 +173,6 @@ black-sky-sentinel/
 └── README.md
 ```
 
----
-
 ## Data Sources
 
 | Source | What It Provides |
@@ -201,8 +183,6 @@ black-sky-sentinel/
 | [PTA](https://pta.gov.pk/) | 4G mobile network coverage |
 | [OpenStreetMap](https://www.openstreetmap.org/) | Hospitals, clinics, substations, towers |
 | [Open-Meteo](https://open-meteo.com/) | Historical max temperatures |
-
----
 
 ## License
 
